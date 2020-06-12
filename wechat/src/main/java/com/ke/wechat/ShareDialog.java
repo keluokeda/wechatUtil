@@ -5,19 +5,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.provider.MediaStore;
-
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -33,6 +28,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class ShareDialog {
@@ -63,15 +60,18 @@ public class ShareDialog {
                     sharePosterView.setVisibility(View.GONE);
                     downloadImageView.setVisibility(View.VISIBLE);
 
-                    Glide.with(activity)
-                            .load(shareBean.sharePoster)
-                            .asBitmap()
-                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                            .into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                                    posterImage.setImageBitmap(resource);
 
+                    Disposable disposable = Observable.just(shareBean.sharePoster)
+                            .observeOn(Schedulers.io())
+                            .map((Function<String, Bitmap>) s -> {
+
+                                return Glide.with(activity).asBitmap().load(s).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
+                            }).observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<Bitmap>() {
+                                @Override
+                                public void accept(Bitmap resource) throws Exception {
+                                    posterImage.setImageBitmap(resource);
+//
                                     contentView.findViewById(R.id.ll_share_wechat).setOnClickListener(v12 -> wechatShareImage(resource, WechatShareService.Scene.Session, bottomSheetDialog));
 
                                     contentView.findViewById(R.id.ll_share_wechat_friends).setOnClickListener(v1 -> wechatShareImage(resource, WechatShareService.Scene.Timeline, bottomSheetDialog));
@@ -90,9 +90,40 @@ public class ShareDialog {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-
                                 }
                             });
+                    compositeDisposable.add(disposable);
+
+//                    Glide.with(activity)
+//                            .load(shareBean.sharePoster)
+//                            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+//                            .into()
+//                            .into(new SimpleTarget<Bitmap>() {
+//                                @Override
+//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                    posterImage.setImageBitmap(resource);
+//
+//                                    contentView.findViewById(R.id.ll_share_wechat).setOnClickListener(v12 -> wechatShareImage(resource, WechatShareService.Scene.Session, bottomSheetDialog));
+//
+//                                    contentView.findViewById(R.id.ll_share_wechat_friends).setOnClickListener(v1 -> wechatShareImage(resource, WechatShareService.Scene.Timeline, bottomSheetDialog));
+//
+//                                    contentView.findViewById(R.id.ll_share_img_download).setOnClickListener(v13 -> {
+//                                        saveBitmapToGallery(resource, activity);
+//                                        bottomSheetDialog.dismiss();
+//                                    });
+//                                    try {
+//                                        Class clazz = bottomSheetDialog.getClass();
+//                                        Field field = clazz.getDeclaredField("behavior");
+//                                        field.setAccessible(true);
+//                                        BottomSheetBehavior bottomSheetBehavior = (BottomSheetBehavior) field.get(bottomSheetDialog);
+//                                        //让dialog滚动到顶部
+//                                        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
+//
+//                                }
+//                            });
 
                 }
         );
@@ -181,7 +212,7 @@ public class ShareDialog {
     private void wechatShareUrl(@NonNull ShareBean shareBean, @NonNull Activity activity, @NonNull CompositeDisposable compositeDisposable, @NonNull WechatShareService.Scene scene, @NonNull BottomSheetDialog bottomSheetDialog) {
         Disposable disposable =
                 Observable.just(shareBean.shareImg).observeOn(Schedulers.io())
-                        .map(s -> Glide.with(activity).load(s).asBitmap().into(120, 120).get())
+                        .map(s -> Glide.with(activity).asBitmap().load(s).into(120, 120).get())
                         .map(bitmap -> {
                             ByteArrayOutputStream output = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
