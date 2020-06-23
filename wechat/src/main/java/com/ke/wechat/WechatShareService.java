@@ -5,12 +5,15 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
+import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+@SuppressWarnings("unused")
 
 public class WechatShareService {
 
@@ -27,7 +30,7 @@ public class WechatShareService {
         return sWechatShareService;
     }
 
-    public final IWXAPI mIWXAPI;
+    private final IWXAPI mIWXAPI;
 
     private WechatShareService(Application application, String id) {
         mIWXAPI = WXAPIFactory.createWXAPI(application, id);
@@ -69,6 +72,17 @@ public class WechatShareService {
 
         mIWXAPI.sendReq(request);
 
+    }
+
+    /**
+     * 打开小程序
+     * @param userName 小程序的名字
+     * @return 结果
+     */
+    public boolean openMinProgram(String userName) {
+        WXLaunchMiniProgram.Req request =  new WXLaunchMiniProgram.Req();
+        request.userName = userName;
+        return mIWXAPI.sendReq(request);
     }
 
     public enum Scene {
