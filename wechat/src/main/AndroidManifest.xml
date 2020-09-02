@@ -9,7 +9,7 @@
    <application>
        <provider
            android:name="com.ke.wechat.MyFileProvider"
-           android:authorities="com.ke.wechat.keProvider"
+           android:authorities="${applicationId}.shareDialogProvider"
            android:exported="false"
            android:grantUriPermissions="true">
            <meta-data

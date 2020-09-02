@@ -259,7 +259,7 @@ public class ShareDialog {
                     bitmap.recycle();
 
                     //兼容7.0
-                    return FileProvider.getUriForFile(activity, "com.ke.wechat.keProvider", imageFile);
+                    return FileProvider.getUriForFile(activity, activity.getPackageName()+".shareDialogProvider", imageFile);
 
 
 //                    return Uri.fromFile(imageFile);
