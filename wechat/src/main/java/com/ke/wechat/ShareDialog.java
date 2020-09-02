@@ -136,24 +136,6 @@ public class ShareDialog {
                         }
                     });
 
-
-//                    Disposable disposable = Observable.just(shareBean.sharePoster)
-//                            .observeOn(Schedulers.io())
-//                            .map((Function<String, Bitmap>) s -> {
-//
-//                                return Glide.with(activity).asBitmap().load(s).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get();
-//                            }).observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new Consumer<Bitmap>() {
-//                                @Override
-//                                public void accept(Bitmap resource) throws Exception {
-//                                    posterImage.setImageBitmap(resource);
-////
-//                                    changePosterContent(resource, contentView, bottomSheetDialog, activity);
-//                                }
-//                            });
-//                    compositeDisposable.add(disposable);
-
-
                 }
         );
 
