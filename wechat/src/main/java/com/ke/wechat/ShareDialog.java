@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +23,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -37,8 +41,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class ShareDialog {
@@ -58,7 +60,7 @@ public class ShareDialog {
 
         View downloadImageView = contentView.findViewById(R.id.ll_share_img_download);
 
-//        ImageView posterImage = contentView.findViewById(R.id.img_poster);
+//        ImageView posterImage = contentView.findViewById(R.id.image_view);
 
         ViewPager viewPager = contentView.findViewById(R.id.view_pager);
 
@@ -82,34 +84,56 @@ public class ShareDialog {
                             return view == object;
                         }
 
-                        @Override
                         @NonNull
+                        @Override
                         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-                            ImageView imageView = new ImageView(container.getContext());
-                            Glide.with(activity).load(shareBean.sharePostArr.get(position))
-                                    .addListener(new RequestListener<Drawable>() {
-                                        @Override
-                                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                            return
-                                                    true;
-                                        }
+                            View view = View.inflate(activity, R.layout.layout_poster, null);
 
-                                        @Override
-                                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                            scrollToBottom(bottomSheetDialog);
-                                            return true;
-                                        }
-                                    })
+                            ImageView imageView = view.findViewById(R.id.image);
+                            Glide.with(activity)
+                                    .load(shareBean.sharePostArr.get(position))
                                     .into(imageView);
 
-                            return imageView;
+                            container.addView(view);
+                            return view;
+
                         }
 
                         @Override
                         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
                             container.removeView((View) object);
                         }
+                    });
 
+                    viewPager.setPageTransformer(true, new GalleryTransformer());
+
+
+                    viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            Glide.with(activity)
+                                    .asBitmap()
+                                    .load(shareBean.sharePostArr.get(position))
+                                    .into(new SimpleTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                            changePosterContent(resource, contentView, bottomSheetDialog, activity);
+
+                                        }
+                                    });
+
+
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
                     });
 
 
@@ -124,15 +148,7 @@ public class ShareDialog {
 //                                public void accept(Bitmap resource) throws Exception {
 //                                    posterImage.setImageBitmap(resource);
 ////
-//                                    contentView.findViewById(R.id.ll_share_wechat).setOnClickListener(v12 -> wechatShareImage(resource, WechatShareService.Scene.Session, bottomSheetDialog));
-//
-//                                    contentView.findViewById(R.id.ll_share_wechat_friends).setOnClickListener(v1 -> wechatShareImage(resource, WechatShareService.Scene.Timeline, bottomSheetDialog));
-//
-//                                    contentView.findViewById(R.id.ll_share_img_download).setOnClickListener(v13 -> {
-//                                        saveBitmapToGallery(resource, activity);
-//                                        bottomSheetDialog.dismiss();
-//                                    });
-//                                    scrollToBottom(bottomSheetDialog);
+//                                    changePosterContent(resource, contentView, bottomSheetDialog, activity);
 //                                }
 //                            });
 //                    compositeDisposable.add(disposable);
@@ -157,6 +173,19 @@ public class ShareDialog {
 
         Objects.requireNonNull(bottomSheetDialog.getWindow()).findViewById(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent);
         bottomSheetDialog.show();
+
+        scrollToBottom(bottomSheetDialog);
+    }
+
+    private void changePosterContent(Bitmap resource, View contentView, BottomSheetDialog bottomSheetDialog, @NonNull Activity activity) {
+        contentView.findViewById(R.id.ll_share_wechat).setOnClickListener(v12 -> wechatShareImage(resource, WechatShareService.Scene.Session, bottomSheetDialog));
+
+        contentView.findViewById(R.id.ll_share_wechat_friends).setOnClickListener(v1 -> wechatShareImage(resource, WechatShareService.Scene.Timeline, bottomSheetDialog));
+
+        contentView.findViewById(R.id.ll_share_img_download).setOnClickListener(v13 -> {
+            saveBitmapToGallery(resource, activity);
+            bottomSheetDialog.dismiss();
+        });
     }
 
     private void scrollToBottom(BottomSheetDialog bottomSheetDialog) {
@@ -204,6 +233,7 @@ public class ShareDialog {
         MediaStore.Images.Media.insertImage(activity.getContentResolver(), bitmap, file.toString(), null);
 
 
+        Toast.makeText(activity.getApplication(), "保存图片成功", Toast.LENGTH_SHORT).show();
     }
 
     private void wechatShareImage(Bitmap bitmap, WechatShareService.Scene scene, BottomSheetDialog bottomSheetDialog) {
@@ -283,13 +313,13 @@ public class ShareDialog {
 
 
     public static final class ShareBean {
-        String shareTitle;
-        String shareUrl;
-        String shareImg;
-        String defaultShareContent;
-        String shareContent;
-        String sharePoster;
-        List<String> sharePostArr;
+        public String shareTitle;
+        public String shareUrl;
+        public String shareImg;
+        public String defaultShareContent;
+        public String shareContent;
+        public String sharePoster;
+        public List<String> sharePostArr;
 
         @Override
         public String toString() {
@@ -302,6 +332,19 @@ public class ShareDialog {
                     ", sharePoster='" + sharePoster + '\'' +
                     ", sharePostArr=" + sharePostArr +
                     '}';
+        }
+    }
+
+    public static class GalleryTransformer implements ViewPager.PageTransformer {
+        @Override
+        public void transformPage(View view, float position) {
+            float scale = 0.5f;
+            float scaleValue = 1 - Math.abs(position) * scale;
+            view.setScaleX(scaleValue);
+            view.setScaleY(scaleValue);
+            view.setAlpha(scaleValue);
+            view.setPivotX(view.getWidth() * (1 - position - (position > 0 ? 1 : -1) * 0.75f) * scale);
+            view.setElevation(position > -0.25 && position < 0.25 ? 1 : 0);
         }
     }
 }
