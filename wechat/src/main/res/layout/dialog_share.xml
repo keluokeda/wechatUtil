@@ -19,8 +19,6 @@
         android:id="@+id/fl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-
 
         >
 
@@ -31,6 +29,12 @@
             app:cardElevation="0dp"
 
             >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,38 +97,26 @@
 
 
             </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:text="取消"
+                    android:textColor="#FF000000" />
+
+            </LinearLayout>
+
         </androidx.cardview.widget.CardView>
+
+
 
 
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        >
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardElevation="0dp">
-
-            <TextView
-                android:id="@+id/tv_cancel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:gravity="center"
-                android:padding="12dp"
-                android:text="取消"
-                android:textColor="#FF000000" />
-
-        </androidx.cardview.widget.CardView>
-
-    </FrameLayout>
 
 
 
