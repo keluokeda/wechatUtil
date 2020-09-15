@@ -136,6 +136,18 @@ public class ShareDialog {
                         }
                     });
 
+                    //修复分享的第一张图片不能下载的bug
+                    Glide.with(activity)
+                            .asBitmap()
+                            .load(shareBean.sharePostArr.get(0))
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                    changePosterContent(resource, contentView, bottomSheetDialog, activity);
+
+                                }
+                            });
+
                 }
         );
 
