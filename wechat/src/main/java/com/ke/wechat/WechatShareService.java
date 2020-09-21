@@ -30,7 +30,7 @@ public class WechatShareService {
         return sWechatShareService;
     }
 
-    private final IWXAPI mIWXAPI;
+    public final IWXAPI mIWXAPI;
 
     private WechatShareService(Application application, String id) {
         mIWXAPI = WXAPIFactory.createWXAPI(application, id);
