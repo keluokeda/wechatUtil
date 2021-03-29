@@ -13,7 +13,6 @@ import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
-@SuppressWarnings("unused")
 
 public class WechatShareService {
 
@@ -79,9 +78,10 @@ public class WechatShareService {
      * @param userName 小程序的名字
      * @return 结果
      */
-    public boolean openMinProgram(String userName) {
+    public boolean openMinProgram(String userName,String path) {
         WXLaunchMiniProgram.Req request =  new WXLaunchMiniProgram.Req();
         request.userName = userName;
+        request.path = path;
         return mIWXAPI.sendReq(request);
     }
 
