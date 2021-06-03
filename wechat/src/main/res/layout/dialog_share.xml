@@ -19,7 +19,7 @@
         android:id="@+id/fl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_marginTop="8dp"
         >
 
 
@@ -39,7 +39,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="4">
+                    android:weightSum="3">
 
                     <LinearLayout
                         android:id="@+id/ll_share_wechat"
@@ -64,8 +64,47 @@
 
                         <TextView
                             style="@style/tv_dialog_share"
-                            android:text="朋友圈" />
+                            android:text="微信朋友圈" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_share_qr"
+                        style="@style/ll_dialog_share"
+                        android:visibility="visible">
+
+                        <ImageView
+                            style="@style/iv_dialog_share"
+                            android:src="@mipmap/share_qr" />
+
+                        <TextView
+                            style="@style/tv_dialog_share"
+                            android:text="二维码" />
+                    </LinearLayout>
+
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:id="@+id/ll_share_contacts"
+                        style="@style/ll_dialog_share">
+
+                        <ImageView
+                            style="@style/iv_dialog_share"
+                            android:src="@mipmap/share_contacts" />
+
+                        <TextView
+                            style="@style/tv_dialog_share"
+                            android:text="短信分享" />
+                    </LinearLayout>
+
+
 
                     <LinearLayout
                         android:id="@+id/ll_share_poster"
@@ -78,7 +117,7 @@
 
                         <TextView
                             style="@style/tv_dialog_share"
-                            android:text="生成海报" />
+                            android:text="分享海报" />
                     </LinearLayout>
 
                     <LinearLayout

@@ -11,17 +11,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val bean = ShareDialog.ShareBean()
+        
+        val imageUrl = "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2Fd58b0ecfde7121920625fff16b7946ae707b3683cb97-fc3l3X_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1625282318&t=8a9d785a715f9a1843099936c1956b02"
         bean.defaultShareContent = ""
         bean.shareContent = ""
         bean.shareImg =
-            "http://admi.gdcws.cn////upload//qrcode//api//acbiz//sales//share//max//20//09//446THIRD.jpg"
+            imageUrl
         bean.shareUrl =
-            "http://admi.gdcws.cn////upload//qrcode//api//acbiz//sales//share//max//20//09//446THIRD.jpg"
+            imageUrl
         bean.sharePoster =
-            "http://admi.gdcws.cn////upload//qrcode//api//acbiz//sales//share//max//20//09//446THIRD.jpg"
+            imageUrl
         bean.sharePostArr = listOf(
-            "http://admi.gdcws.cn////upload//qrcode//api//acbiz//sales//share//max//20//09//446THIRD.jpg",
-            "http://admi.gdcws.cn////upload//qrcode//api//acbiz//sales//share//max//20//09//446THIRD.jpg"
+            imageUrl,
+            imageUrl
         )
         WechatShareService.init(application, "")
 

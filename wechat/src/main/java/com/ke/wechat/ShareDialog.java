@@ -1,5 +1,6 @@
 package com.ke.wechat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -22,6 +24,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ShareDialog {
 
 
-    public ShareDialog(@NonNull ShareBean shareBean, @NonNull Activity activity) {
+    public ShareDialog(@NonNull ShareBean shareBean, @NonNull FragmentActivity activity) {
 
 
         CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -150,7 +153,27 @@ public class ShareDialog {
 
         contentView.findViewById(R.id.ll_share_wechat_friends).setOnClickListener(v -> wechatShareUrl(shareBean, activity, compositeDisposable, WechatShareService.Scene.Timeline, bottomSheetDialog));
 
+        contentView.findViewById(R.id.ll_share_qr).setOnClickListener(v -> {
+            Disposable disposable = new RxPermissions(activity).request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .subscribe(aBoolean -> {
+                        if (aBoolean != null && aBoolean) {
+                            shareQRImage(shareBean, activity, bottomSheetDialog, compositeDisposable);
+                        }
+                    });
 
+            compositeDisposable.add(disposable);
+
+
+        });
+        contentView.findViewById(R.id.ll_share_contacts).setOnClickListener(v -> {
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, shareBean.defaultShareContent);
+            activity.startActivity(Intent.createChooser(intent, "分享到"));
+            bottomSheetDialog.dismiss();
+
+        });
         contentView.findViewById(R.id.tv_cancel).setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         bottomSheetDialog.setContentView(contentView);
@@ -190,8 +213,7 @@ public class ShareDialog {
     }
 
     private void saveBitmapToGallery(Bitmap bitmap, Activity activity) {
-        String galleryPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator
-                + Environment.DIRECTORY_DCIM + File.separator + "Camera" + File.separator;
+        String galleryPath = activity.getExternalFilesDir(null) + File.separator;
 
         File file = null;
         FileOutputStream fileOutputStream = null;
@@ -263,7 +285,8 @@ public class ShareDialog {
                 .observeOn(Schedulers.io())
                 .map(bitmap -> {
 
-                    String imagePath = Environment.getExternalStorageDirectory() + File.separator;
+
+                    String imagePath = activity.getExternalFilesDir(null) + File.separator;
                     File imageFile = new File(imagePath, "share.jpg");
 
                     if (imageFile.exists()) {
