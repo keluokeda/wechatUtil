@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -167,10 +168,14 @@ public class ShareDialog {
         });
         contentView.findViewById(R.id.ll_share_contacts).setOnClickListener(v -> {
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT, shareBean.defaultShareContent);
-            activity.startActivity(Intent.createChooser(intent, "分享到"));
+            Intent intent = new Intent(Intent.ACTION_SENDTO,Uri.parse("smsto:"));
+//            intent.setData();
+//            intent.setDataAndType(Uri.parse("smsto:"),"vnd.android-dir/mms-sms");
+            intent.putExtra("sms_body", shareBean.defaultShareContent);
+//            intent.setType("vnd.android-dir/mms-sms");
+//            intent.setType("text/plain");
+//            intent.putExtra(Intent.EXTRA_TEXT, shareBean.defaultShareContent);
+            activity.startActivity(intent);
             bottomSheetDialog.dismiss();
 
         });
