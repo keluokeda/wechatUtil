@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ke.wechat">
 
@@ -6,15 +7,23 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-   <application>
-       <provider
-           android:name="com.ke.wechat.MyFileProvider"
-           android:authorities="${applicationId}.shareDialogProvider"
-           android:exported="false"
-           android:grantUriPermissions="true">
-           <meta-data
-               android:name="android.support.FILE_PROVIDER_PATHS"
-               android:resource="@xml/file_paths_public" />
-       </provider>
-   </application>
+    <application>
+        <activity
+            android:name=".PosterActivity"
+            android:theme="@style/WechatShareFullScreenTheme" />
+        <activity
+            android:name=".PosterListActivity"
+            android:theme="@style/WechatShareFullScreenTheme" />
+
+        <provider
+            android:name=".MyFileProvider"
+            android:authorities="${applicationId}.shareDialogProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/wechat_share_file_paths_public" />
+        </provider>
+    </application>
+
 </manifest>
