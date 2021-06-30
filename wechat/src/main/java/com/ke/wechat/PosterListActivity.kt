@@ -1,6 +1,9 @@
 package com.ke.wechat
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +13,18 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import java.util.*
 
 class PosterListActivity : AppCompatActivity() {
 
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ACTION_FINISH) {
+                finish()
+            }
+        }
+
+    }
 
     private var currentView: View? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +49,13 @@ class PosterListActivity : AppCompatActivity() {
                     .toBundle()
             )
         }
+        registerReceiver(receiver, IntentFilter(ACTION_FINISH))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver)
+    }
 
     private fun initViewPager(
         viewPager: ViewPager,
@@ -82,6 +99,7 @@ class PosterListActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_SHARE_BEAN = "EXTRA_SHARE_BEAN"
+        const val ACTION_FINISH = "ACTION_FINISH"
     }
 
     fun dismiss(view: View) {

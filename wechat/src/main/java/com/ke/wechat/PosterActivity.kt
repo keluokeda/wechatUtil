@@ -1,10 +1,12 @@
 package com.ke.wechat
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -65,6 +67,8 @@ class PosterActivity : AppCompatActivity() {
         Glide.with(this).asBitmap().load(imageUrl).into(object : SimpleTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 WechatShareService.instance().shareImage(resource, scene)
+                sendBroadcast(Intent(PosterListActivity.ACTION_FINISH))
+                finish()
             }
 
         })
