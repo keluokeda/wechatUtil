@@ -66,7 +66,8 @@ class PosterActivity : AppCompatActivity() {
 
         Glide.with(this).asBitmap().load(imageUrl).into(object : SimpleTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                WechatShareService.instance().shareImage(resource, scene)
+
+                WechatShareService.instance().shareImage(Bitmap.createBitmap(resource), scene)
                 sendBroadcast(Intent(PosterListActivity.ACTION_FINISH))
                 finish()
             }
