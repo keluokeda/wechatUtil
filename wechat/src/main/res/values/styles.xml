@@ -35,7 +35,6 @@
     <style name="WechatShareFullScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">shortEdges</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">#eeeeee</item>
     </style>
 
 </resources>
