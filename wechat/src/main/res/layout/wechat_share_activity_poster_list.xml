@@ -16,6 +16,7 @@
         android:background="?selectableItemBackgroundBorderless"
         android:onClick="dismiss"
         android:padding="8dp"
+        android:contentDescription="dismiss"
         android:src="@drawable/wechat_share_baseline_clear_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
