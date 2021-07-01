@@ -80,4 +80,8 @@ class PosterActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_IMAGE_URL = "EXTRA_IMAGE_URL"
     }
+
+    fun dismiss(view: View) {
+        onBackPressed()
+    }
 }

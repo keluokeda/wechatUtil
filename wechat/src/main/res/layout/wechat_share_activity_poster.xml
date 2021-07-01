@@ -29,6 +29,7 @@
         android:gravity="center"
         android:padding="@dimen/wechat_share_bottom_text_padding"
         android:text="@string/wechat_share_cancel"
+        android:onClick="dismiss"
         android:textColor="@color/wechat_share_bottom_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
